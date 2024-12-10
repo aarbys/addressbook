@@ -1,0 +1,161 @@
+{% load static%}
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Телефонный справочник</title>
+    <link rel="icon" type="image/x-icon" href="{% static '/ecss/images/phonebook.png'%}">
+    <link type="text/css" href="{% static '/ecss/css/column_style.css' %}" rel="stylesheet">
+    <!-- CSS для Select2 -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet"/>
+
+    <!-- jQuery (обязательно для Select2) -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <!-- JS для Select2 -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+
+
+    <script>
+$(document).ready(function() {
+  function initializeSelect2(selector, placeholder, allowClear = false) {
+    $(selector).select2({
+      placeholder: placeholder,
+      allowClear: allowClear,
+      tags: true,
+      tokenSeparators: [',', ' '],
+      minimumInputLength: 0,
+      minimumResultsForSearch: Infinity
+    }).on('change', function() {
+      $(".Find_button").trigger("click");
+    });
+  }
+
+  initializeSelect2('.Select_subdivision', 'Выберите подразделение', true);
+  initializeSelect2('.Select_org', 'Выберите организацию', true);
+  initializeSelect2('.Select_sort_type', 'По ФИО', false, Infinity, Infinity);
+  initializeSelect2('.Select_view_type', 'Выберите элемент', false, Infinity,Infinity);
+});
+
+    </script>
+
+
+</head>
+<body>
+<div class="container">
+    <div class="search_div">
+        <p class="errorinfo">{{ errorinfo }}
+        <form id="search_form" method="POST" class="search_form">
+            <input type="submit" value="Найти" name="Find" class="Find_button">
+            <div class="Select_org_block">
+                <select name="organizations" class="Select_org" size=1>
+                    <option value="all" class="Opinion" {% if selected == all %} selected {%endif%}>everything</option>
+
+
+                    {% for m in menu %}
+                    <option class="Opinion" value="{{ m }}" {% if selected == m %} selected {%endif%}>{{m}}</option>
+                    {% endfor %}
+
+                </select>
+            </div>
+
+
+            <div class="history_form">
+                <div class="history clearable">
+                    <input type="text" id="filter" name="filter" value="{{ history }}" class="history1">
+                </div>
+
+            </div>
+
+            <div class="Select_subdivision_block">
+                <div>
+                    <select name="subdivision" class="Select_subdivision" size=1>
+                        <option value="all" class="Opinion" {% if subdiv == all %} selected {% endif %}>everything
+                        </option>
+                        {% for m in menu %}
+                        <option class="Opinion" value="{{ m }}" {% if subdiv == m %} selected {% endif %}>{{m}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="sorting">
+                <label>Сортировка:
+                    <select name="sorting_type" class="Select_sort_type">
+                        <option class="Opinion" value="fio" {% if sort_by == 'fio' %} selected {% endif %}>По ФИО</option>
+                        <option class="Opinion" value="subdivision" {% if sort_by == 'subdivision' %} selected {% endif %}>По
+                            подразделению
+                        </option>
+                        <option class="Opinion" value="inside" {% if sort_by == 'inside' %} selected {% endif %}>По
+                            внутреннему
+                        </option>
+                        <option class="Opinion" value="outside" {% if sort_by == 'outside' %} selected {% endif %}>По
+                            внешнему
+                        </option>
+                        <option class="Opinion" value="corporation" {% if sort_by == 'corporation' %} selected {% endif %}>По
+                            корпоративному
+                        </option>
+                    </select>
+                </label>
+            </div>
+
+            <div class="view">
+                <label>Вид:
+
+                    <select class="Select_view_type" name="view_type">
+                        <option class="Opinion" value="table" {% if view_type == 'table' %}selected {%endif%}>Таблица</option>
+                        <option class="Opinion" value="columns" {% if view_type == 'columns' %} selected {%endif%}>
+                            Колонками
+                        </option>
+                    </select>
+                </label>
+            </div>
+
+            <div class="RMK_IMAGE">
+                <img src="{% static '/ecss/images/RMK.png'%}" width="295px" height="123px">
+            </div>
+
+        </form>
+    </div>
+    <div class="table_div">
+        <table class="Users">
+            <thead>
+            <tr>
+                <th class="table-head-left">ФИО</th>
+                <th class="table-head">Подразделение</th>
+                <th class="table-head">Внутренний</th>
+                <th class="table-head">Внешний</th>
+                <th class="table-head-right">Корпоративный</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for phone,name,email,server,role in persons %}
+            <tr>
+                <td class="fill">{{name}}</td>
+                <td class="fill">{{server}}</td>
+                <td class="fill">{{phone}}</td>
+                <td class="fill">i don't know</td>
+                <td class="fill">i don't know</td>
+            </tr>
+
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <div class="prevpage1">
+            <!--        {% if page > 1 %}-->
+            <a href='./{{ page|add:"-1" }}' float="left" class="link-to-page">Предыдущие</a>
+            <!--        {% endif %}-->
+            &nbsp;
+        </div>
+        <div class="countpage1">{{ page }}/{{ page_amount }}</div>
+        <div class="nextpage1">&nbsp;
+            <!--        {% if nextpage is True %}-->
+            <a href='./{{ page|add:"1" }}' align="right" class="link-to-page">Следующие</a>
+            <!--        {% endif %}-->
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,358 @@
+{% load static%}
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Телефонный справочник</title>
+    <link rel="icon" type="image/x-icon" href="{% static '/ecss/images/phonebook.png'%}">
+    <link type="text/css" href="{% static '/ecss/css/style.css' %}" rel="stylesheet">
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Подключение CSS Select2 -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <!-- Подключение JS Select2 -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+
+
+<script>
+    $(document).on('click', '.prevpage1', function(event) {
+        var csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        event.preventDefault();
+        var url = $(this).data('url');
+        console.log('prev страница');
+
+        var history = $('.filter').val();
+        var sort_by = $('.Select_sort_type').val();
+        var subdiv = $('.Select_subdivision').val();
+        var org = $('.Select_org').val();
+        var countpage1 = $('.countpage1').text();
+        var elements_amount = $('.elements_amount').val();
+        $.ajax({
+            url: 'prev_table',
+            type: 'POST',
+            data: { history: history,
+                sort_by: sort_by,
+                subdiv: subdiv,
+                org: org,
+                countpage1: countpage1.split('/')[0],
+                elements_amount: elem_amount,
+            },
+
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('X-CSRFToken', csrftoken);
+            },
+            success: function(response) {
+                $('.Users').html(response.Users);
+                $('.countpage1').text(response.pagenum + "/"+ response.countpage);
+                var nextPageLink = '<a href="#" class="nextpage" data-url="' + response.nextpage1 + '">&rarr;</a>';
+                $('.nextpage1').html(nextPageLink);
+                var prevPageLink = '<a href="#" class="prevpage" data-url="' + response.prevpage1 + '">&larr;</a>';
+                $('.prevpage1').html(prevPageLink);
+                var elems = '<input id="elements_amount" name="elements_amount" value="' +  response.elements_amount  + '"class="elements_amount" type="number" min="1" max="45" step="1" required>';
+                $('.amount_elements_div').html(elems);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+            }
+        });
+    });
+
+</script>
+
+
+<script>
+    $(document).on('click', '.nextpage1', function(event) {
+        var csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        event.preventDefault();
+        var url = $(this).data('url');
+        console.log('некст страница');
+        var history = $('#filter').val();
+        var sort_by = $('.Select_sort_type').val();
+        var subdiv = $('.Select_subdivision').val();
+        var org = $('.Select_org').val();
+        var countpage1 = $('.countpage1').text();
+        var elements_amount = $('.elements_amount').val();
+        $.ajax({
+            url: 'next_table',
+            type: 'POST',
+            data: { history: history,
+                sort_by: sort_by,
+                subdiv: subdiv,
+                org: org,
+                countpage1: countpage1.split('/')[0],
+                elements_amount: elements_amount,
+            },
+
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('X-CSRFToken', csrftoken);
+            },
+            success: function(response) {
+                $('.Users').html(response.Users);
+                $('.countpage1').text(response.pagenum + "/"+ response.countpage);
+                var nextPageLink = '<a href="#" class="nextpage" data-url="' + response.nextpage1 + '">&rarr;</a>';
+                $('.nextpage1').html(nextPageLink);
+                var prevPageLink = '<a href="#" class="prevpage" data-url="' + response.prevpage1 + '">&larr;</a>';
+                $('.prevpage1').html(prevPageLink);
+                var elems = '<input id="elements_amount" name="elements_amount" value="' +  response.elements_amount  + '"class="elements_amount" type="number" min="1" max="45" step="1" required>';
+                $('.amount_elements_div').html(elems);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+            }
+        });
+    });
+
+</script>
+<script>
+
+        $(document).ready(function() {
+        var csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        $.ajaxSetup({
+                beforeSend: function(xhr, settings) {
+                    if (!this.crossDomain) {
+                        xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                    }
+                }
+            });
+
+        console.log('jQuery loaded:', !!window.jQuery);
+        console.log('Select2 loaded:', !!$.fn.select2);
+            $('.Find_button').click(function() {
+            event.preventDefault();
+            console.log('Кнопка нажата');
+            var history = $('#filter').val();
+            var sort_by = $('.Select_sort_type').val();
+            var subdiv = $('.Select_subdivision').val();
+            var org = $('.Select_org').val();
+            var elements_amount = $('.elements_amount').val();
+
+            console.log('history:', history);
+            console.log('sort_by:', sort_by);
+            console.log('subdiv:', subdiv);
+            console.log('org:', org);
+            console.log('elements_amount:', elements_amount);
+
+            $.ajax({
+                    url: 'reload_page',
+                    type: 'POST',
+                    data: { history: history,
+                            sort_by: sort_by,
+                            subdiv: subdiv,
+                            org: org,
+                            elements_amount:elements_amount,
+                            },
+
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                    },
+                    success: function(response) {
+                        $('.Users').html(response.Users);
+
+                        var nextPageLink = '<a href="#" class="nextpage" data-url="/ecss/next_table">&rarr;</a>';
+                        $('.nextpage1').html(nextPageLink);
+                        $('.countpage1').text("1/"+ response.countpage);
+                        var elems = '<input id="elements_amount" name="elements_amount" value="' +  response.elements_amount  + '"class="elements_amount" type="number" min="1" max="45" step="1" required>';
+                        $('.amount_elements_div').html(elems);
+                    },
+
+                error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                }
+            });
+
+
+
+            });
+        });
+    </script>
+
+<script>
+    $(document).ready(function() {
+  function initializeSelect2(selector, placeholder, allowClear = false) {
+    $(selector).select2({
+      placeholder: placeholder,
+      allowClear: allowClear,
+      tags: true,
+      tokenSeparators: [',', ' '],
+      minimumInputLength: 0,
+      minimumResultsForSearch: Infinity
+    }).on('change', function(event) {
+        event.preventDefault();  // Теперь передаем event
+
+        var csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        // Получаем значения из Select2
+        var history = $('#filter').val();
+        var sort_by = $('.Select_sort_type').val();
+        var subdiv = $('.Select_subdivision').val();
+        var org = $('.Select_org').val();
+        var elements_amount = $('.elements_amount').val();
+
+        // Логирование для отладки
+        console.log('history:', history);
+        console.log('sort_by:', sort_by);
+        console.log('subdiv:', subdiv);
+        console.log('org:', org);
+        console.log('elements_amount:', elements_amount);
+
+        // Отправляем AJAX-запрос
+        $.ajax({
+            url: 'reload_page',  // URL для обработки запроса
+            type: 'POST',
+            data: {
+                history: history,
+                sort_by: sort_by,
+                subdiv: subdiv,
+                org: org,
+                elements_amount: elements_amount,
+            },
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('X-CSRFToken', csrftoken);  // Установка CSRF токена
+            },
+            success: function(response) {
+                // Обновляем содержимое таблицы
+                $('.Users').html(response.Users);
+
+                // Обновляем ссылку на следующую страницу
+                if (response.nextpage1) {
+                    var nextPageLink = '<a href="#" class="nextpage" data-url="/ecss/next_table">&rarr;</a>';
+                    $('.nextpage1').html(nextPageLink);
+                }
+
+                // Обновляем номер страницы
+                $('.countpage1').text("1/" + response.countpage);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+            }
+        });
+
+    });
+  }
+
+  // Инициализация Select2 для элементов
+  initializeSelect2('.Select_subdivision', 'Выберите подразделение', true);
+  initializeSelect2('.Select_org', 'Выберите организацию', true);
+  initializeSelect2('.Select_sort_type', 'По ФИО', false);
+  initializeSelect2('.elements_amount', '20', false);
+});
+
+
+</script>
+
+</head>
+<body>
+<div class="container">
+    <div class="search_div">
+        <form id="search_form" method="POST" class="search_form">
+            {% csrf_token %}
+            <input type="submit" value="Найти" name="Find" class="Find_button">
+            <div class="Select_org_block">
+                <select name="organizations" class="Select_org" size=1>
+                    <option value="all" class="Opinion" {% if selected == all %} selected {%endif%}>everything</option>
+                    {% for m in menu %}
+                    <option class="Opinion" value="{{ m }}" {% if selected == m %} selected {%endif%}>{{m}}</option>
+                    {% endfor %}
+
+                </select>
+            </div>
+
+
+            <div class="history_form">
+                <div class="history clearable">
+                    <input type="text" id="filter" name="filter" value="{{ history }}" class="history1">
+                </div>
+
+            </div>
+
+            <div class="Select_subdivision_block">
+                <div>
+                    <select name="subdivision" class="Select_subdivision" size=1>
+                        <option value="all" class="Opinion" {% if subdiv == all %} selected {% endif %}>everything
+                        </option>
+                        {% for m in menu %}
+                        <option class="Opinion" value="{{ m }}" {% if subdiv == m %} selected {% endif %}>{{m}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="sorting">
+                <label>Сортировка:
+                    <select name="sorting_type" class="Select_sort_type">
+                        <option class="Opinion" value="fio" {% if sort_by == 'fio' %} selected{% elif sort_by is not defined %} selected {% endif %}>По ФИО</option>
+                        <option class="Opinion" value="subdivision" {% if sort_by == 'subdivision' %} selected {% endif %}>По
+                            подразделению
+                        </option>
+                        <option class="Opinion" value="inside" {% if sort_by == 'inside' %} selected {% endif %}>По
+                            внутреннему
+                        </option>
+                        <option class="Opinion" value="outside" {% if sort_by == 'outside' %} selected {% endif %}>По
+                            внешнему
+                        </option>
+                        <option class="Opinion" value="corporation" {% if sort_by == 'corporation' %} selected {% endif %}>По
+                            корпоративному
+                        </option>
+                    </select>
+                </label>
+            </div>
+
+
+            <div class="RMK_IMAGE">
+                <img src="{% static '/ecss/images/logo.png'%}" width="295px" height="123px">
+            </div>
+
+        </form>
+    </div>
+    <div class="table_div">
+        <table class="Users">
+            <thead>
+            <tr>
+                <th class="table-head-left">ФИО</th>
+                <th class="table-head">Подразделение</th>
+                <th class="table-head">Внутренний</th>
+                <th class="table-head">Внешний</th>
+                <th class="table-head-right">Корпоративный</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for phone,name,email,server,role in persons %}
+            <tr>
+                <td class="fill">{{name}}</td>
+                <td class="fill">{{server}}</td>
+                <td class="fill">{{phone}}</td>
+                <td class="fill">i don't know</td>
+                <td class="fill">i don't know</td>
+            </tr>
+
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="pagination-container">
+        <div class="prevpage1">
+            <a href="#" class="prevpage" data-url="./prev_table">&larr;</a>
+            &nbsp;
+        </div>
+        <div class="countpage1">{{page}}/{{page_amount}}</div>
+        <div class="nextpage1">&nbsp;
+            <a href="#" class="nextpage" data-url="./next_table">&rarr;</a>
+        </div>
+        <div class="amount_elements_div ">
+            <select name="elements_amount" class="elements_amount">
+
+                {%for m in elements_variable %}
+                <option class="opt_elements" value="{{ m }}" {% if elements_amount == m %} selected  {% endif %}>{{m}}</option>
+                {% endfor %}
+            </select>
+
+            </div>
+    </div>
+
+</div>
+</body>
+</html>

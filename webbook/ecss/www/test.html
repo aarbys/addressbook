@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Телефонный справочник</title>
+    <link rel="icon" type="image/x-icon" href="phonebook.png">
+    <link type="text/css" href="test.css" rel="stylesheet">
+
+</head>
+<body>
+<div class="container">
+    <p class="errorinfo">{{ errorinfo }}
+    <p class="info">{{ info }}
+    <form id="search_form" method="POST" class="search_form">
+
+
+        <div class="history">
+            <input type="text" id="filter" name="filter" value="{{ history }}" class="history1">
+        </div>
+        <div class="Select_org_block">
+            <div>
+                <select name="organizations" class="Select_org" size=1 onclick="size=(size!=1)?n:3;"
+                        onmouseleave="size=(size!=3)?n:1;">
+                    <!--            <option value="All" {% if selected==-->
+                    <!--            'All' %}selected{% endif %}>Все организации</option>-->
+                    <option value="all" class="Opinion" onclick="">everything</option>
+                    <option value="all" class="Opinion">everything</option>
+                    <option value="all" class="Opinion">everything</option>
+                    <option value="all" class="Opinion">everything</option>
+                    <option value="all" class="Opinion">everything</option>
+                    <option value="all" class="Opinion">everything</option>
+
+                    <!--            {% for m in menu %}-->
+                    <option value="{{ m }}" {% if selected== m %} selected {% endif %}>{{m}}</option>
+                    <!--            {% endfor %}-->
+                </select>
+            </div>
+
+        </div>
+        <div class="Select_role_block">
+            <div>
+                <select name="organizations" class="Select_role" size=1 onclick="size=(size!=1)?n:3;"
+                        onmouseleave="size=(size!=3)?n:1;">
+                    <!--            <option value="All" {% if selected==-->
+                    <!--            'All' %}selected{% endif %}>Все организации</option>-->
+                    <option value="all" class="Opinion" onclick="">everything</option>
+                    <option value="all" class="Opinion">everything</option>
+                    <option value="all" class="Opinion">everything</option>
+                    <option value="all" class="Opinion">everything</option>
+                    <option value="all" class="Opinion">everything</option>
+                    <option value="all" class="Opinion">everything</option>
+
+                    <!--            {% for m in menu %}-->
+                    <option value="{{ m }}" {% if selected== m %} selected {% endif %}>{{m}}</option>
+                    <!--            {% endfor %}-->
+                </select>
+            </div>
+
+        </div>
+    <img src="2544523-1@2x.png">
+        <div class="find-button">
+            <div class="rectangle">
+                <input type="submit" value="Найти" name="Find" class="Find">
+            </div>
+        </div>
+        <div class="primary-button">
+            <div class="rectangle">
+                <input type="submit" onclick="window.location.href='./1'" name="clear" class="clear button"
+                       value="Очистить поиск">
+            </div>
+
+        </div>
+
+        <div class="prevpage1">
+            <!--        {% if page > 1 %}-->
+            <a href='./{{ page|add:"-1" }}' float="left" class="link-to-page">Предыдущие</a>
+            <!--        {% endif %}-->
+            &nbsp;
+        </div>
+        <div class="countpage1">1/11</div>
+        <div class="nextpage1">&nbsp;
+            <!--        {% if nextpage is True %}-->
+            <a href='./{{ page|add:"1" }}' align="right" class="link-to-page">Следующие</a>
+            <!--        {% endif %}-->
+        </div>
+
+    </form>
+
+
+    <table>
+        <thead>
+        <tr>
+            <th class="table-head-left">Телефон</th>
+            <th class="table-head">Имя абонента</th>
+            <th class="table-head">E-Mail</th>
+            <th class="table-head">{{organization}}</th>
+            <th class="table-head-right">{{Role}}</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <!--        {% for phone,name,email,server,role in persons %}-->
+        <tr>
+            <td class="fill">{{phone}}</td>
+            <td class="fill">{{name}}</td>
+            <td class="fill">{{email}}</td>
+            <td class="fill">{{server}}</td>
+            <td class="fill">{{role}}</td>
+        </tr>
+        <tr>
+            <td class="fill">{{phone}}</td>
+            <td class="fill">{{name}}</td>
+            <td class="fill">{{email}}</td>
+            <td class="fill">{{server}}</td>
+            <td class="fill">{{role}}</td>
+        </tr>
+        <tr>
+            <td class="fill">{{phone}}</td>
+            <td class="fill">{{name}}</td>
+            <td class="fill">{{email}}</td>
+            <td class="fill">{{server}}</td>
+            <td class="fill">{{role}}</td>
+        </tr>
+        <!--        {% endfor %}-->
+        </tbody>
+    </table>
+    <div class="prevpage2">
+        <!--        {% if page > 1 %}-->
+        <a href='./{{ page|add:"-1" }}' float="left" class="link-to-page">Предыдущие</a>
+        <!--        {% endif %}-->
+        &nbsp;
+    </div>
+    <div class="countpage2">1/11</div>
+    <!--    <div class="countpage2"></div>-->
+    <div class="nextpage2">&nbsp;
+        <!--        {% if nextpage is True %}-->
+        <a href='./{{ page|add:"1" }}' align="center" class="link-to-page">Следующие</a>
+        <!--        {% endif %}-->
+    </div>
+</div>
+</body>
+</html>
